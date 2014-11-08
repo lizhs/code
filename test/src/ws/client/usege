@@ -1,0 +1,2 @@
+wsimport -keep -d .\src -p ws.client http://localhost:8080/testjws/service/sayHi?wsdl
+jdk 自带命令生成客户端调用代码

@@ -1,0 +1,17 @@
+ <project name="lttsclipse" basedir="." xmlns:rsel="antlib:org.apache.tools.ant.types.resources.selectors" xmlns:rcmp="antlib:org.apache.tools.ant.types.resources.comparators">
+
+
+
+	<target name="aa">
+		<telnet userid="a" password="a" server="192.168.1.1">
+			<read>/home/a</read>
+			<write>ls</write>
+			<read string="/home/a" />
+		</telnet>
+	</target>
+
+	<target name="bb">
+		<sshexec host="192.168.1.5" username="a" password="a" command="ls" />
+	</target>
+
+</project>
