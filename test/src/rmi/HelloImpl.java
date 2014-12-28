@@ -11,7 +11,13 @@ public class HelloImpl extends UnicastRemoteObject implements HelloRemote {
 	public String sayHello(StringBuffer sb) throws RemoteException {
 		
 		System.out.println(this);
-		sb.append("xxx");
+		sb.append("执行中"+Thread.currentThread());
+		try {
+			Thread.sleep(1000*1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("Hello World!"+sb.hashCode());
 		return sb.toString();
 	}

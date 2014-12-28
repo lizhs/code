@@ -35,6 +35,7 @@ public class JettyTest {
 	 */
 	public static void main(String[] args) {
 		Server service = new Server();
+		service.setThreadPool(null);
 		Connector connector = new SocketConnector();
 		// 设置端口
 		connector.setPort(8888);

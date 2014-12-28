@@ -2,3 +2,4 @@ target
 jdk.src
 hotspot.src
 *.log
+tmp
