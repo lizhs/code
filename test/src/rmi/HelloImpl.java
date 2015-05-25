@@ -8,7 +8,7 @@ public class HelloImpl extends UnicastRemoteObject implements HelloRemote {
 		super();
 	}
 
-	public String sayHello(StringBuffer sb) throws RemoteException {
+	public String sayHello(StringBuffer sb) {
 		
 		System.out.println(this);
 		sb.append("执行中"+Thread.currentThread());

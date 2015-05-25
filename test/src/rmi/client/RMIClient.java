@@ -14,7 +14,7 @@ public class RMIClient {
 		// System.setSecurityManager(new RMISecurityManager());//
 		// 如果服务器和客户端不再同一台机器要加这行
 //new HelloImpl();
-		HelloRemote hello = (HelloRemote) Naming.lookup("rmi://127.0.0.1:6600/RMI_Hello");
+		HelloRemote hello = (HelloRemote) Naming.lookup("rmi://127.0.0.1:6600/RMI_Hello/xx/xx");
 		StringBuffer sb = new StringBuffer();
 		System.out.println(sb.hashCode());
 		String ret = hello.sayHello(sb);

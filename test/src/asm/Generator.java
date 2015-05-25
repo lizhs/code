@@ -10,12 +10,12 @@ import org.objectweb.asm.ClassWriter;
 
 public class Generator {
 	public static void main(String args[]) throws Exception {
-		ClassReader cr = new ClassReader("Account");
+		ClassReader cr = new ClassReader("asm.Account");
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 		ClassAdapter classAdapter = new AddSecurityCheckClassAdapter(cw);
 //		 cr.accept(classAdapter, ClassReader.SKIP_DEBUG);
 		byte[] data = cw.toByteArray();
-		File file = new File("Account.class");
+		File file = new File("asm/asmAccount.class");
 		FileOutputStream fout = new FileOutputStream(file);
 		fout.write(data);
 		fout.close();

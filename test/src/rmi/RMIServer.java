@@ -13,13 +13,13 @@ import java.rmi.registry.LocateRegistry;
 public class RMIServer {
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
 
-		HelloRemote hello = new HelloImpl();
+		HelloImpl hello = new HelloImpl();
 		System.out.println(hello);
 //		Naming.rebind("hello", hello);
 		try {
 			LocateRegistry.createRegistry(6600);  
             //注册通讯路径  
-            Naming.rebind("rmi://127.0.0.1:6600/RMI_Hello", hello);  
+            Naming.rebind("rmi://127.0.0.1:6600/RMI_Hello/xx/xx", hello);  
             System.out.println("Service Start!");  
             
 //			Naming.bind("rmi://127.0.0.1:1099/RMI_Hello",hello);

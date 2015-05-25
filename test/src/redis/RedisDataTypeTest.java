@@ -21,7 +21,7 @@ public class RedisDataTypeTest {
 
 	@Test
 	public void testMap() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		jedis.hset("user", "id", "001");
 		jedis.hset("user", "name", "lizhs");
 		jedis.hset("user", "dep", "研发部");
@@ -43,7 +43,7 @@ public class RedisDataTypeTest {
 	 */
 	@Test
 	public void testQueue() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		jedis.del("servers");
 		Assert.assertEquals(Boolean.FALSE, jedis.exists("servers"));
 
@@ -58,6 +58,8 @@ public class RedisDataTypeTest {
 		// []
 		value = jedis.lpop("servers");// 左边移出，此时已经没数据
 		Assert.assertEquals(value, null);
+		
+//		List<String> blpop = jedis.blpop("servers"); 
 	}
 
 	/**
@@ -67,7 +69,7 @@ public class RedisDataTypeTest {
 	 */
 	@Test
 	public void testStack() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		jedis.del("servers");
 		Assert.assertEquals(Boolean.FALSE, jedis.exists("servers"));
 
@@ -89,7 +91,7 @@ public class RedisDataTypeTest {
 	 */
 	@Test
 	public void testSet() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		jedis.del("servers");
 		Assert.assertEquals(Boolean.FALSE, jedis.exists("servers"));
 
@@ -115,7 +117,7 @@ public class RedisDataTypeTest {
 	 */
 	@Test
 	public void testSortedSet() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		jedis.del("servers");
 		Assert.assertEquals(Boolean.FALSE, jedis.exists("servers"));
 
@@ -144,7 +146,7 @@ public class RedisDataTypeTest {
 	 */
 	@Test
 	public void testListIncludeMap() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		jedis.del("servers");
 		Assert.assertEquals(Boolean.FALSE, jedis.exists("servers"));
 
@@ -158,7 +160,7 @@ public class RedisDataTypeTest {
 		jedis.hset("servers:hxappa", "maxThreads", "30");
 
 		jedis.sadd("servers", "hxappb");
-		jedis.hset("servers:hxappb", "ip", "10.24.1.45");
+		jedis.hset("servers:hxappb", "ip", "127.0.0.1");
 		jedis.hset("servers:hxappb", "port", "2501");
 		jedis.hset("servers:hxappb", "maxThreads", "30");
 
@@ -186,7 +188,7 @@ public class RedisDataTypeTest {
 	 */
 	@Test
 	public void testTuxd() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		jedis.del("servers");
 		Assert.assertEquals(Boolean.FALSE, jedis.exists("servers"));
 
@@ -200,7 +202,7 @@ public class RedisDataTypeTest {
 		jedis.hset("servers:hxappa", "maxThreads", "30");
 
 		jedis.zadd("servers", 0,"hxappb");
-		jedis.hset("servers:hxappb", "ip", "10.24.1.45");
+		jedis.hset("servers:hxappb", "ip", "127.0.0.1");
 		jedis.hset("servers:hxappb", "port", "2501");
 		jedis.hset("servers:hxappb", "maxThreads", "30");
 

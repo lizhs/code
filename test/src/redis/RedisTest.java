@@ -1,7 +1,9 @@
 package redis;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -17,12 +19,94 @@ import redis.clients.jedis.Transaction;
 
 public class RedisTest {
 
+	@Test
+	public void testGetForExpire() {
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
+		System.out.println(jedis.get("test"));
+		System.out.println(jedis.exists("test"));
+	}
+
+	@Test
+	public void testTimeoutForExpire() {
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
+		jedis.expire("test", 10);
+	}
+
+	@Test
+	public void testSetForExpire() {
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
+		System.out.println(jedis.set("test", "aa"));
+	}
+
+	@Test
+	public void testBlockingWithMP() {
+		// final Jedis jedis = new Jedis("127.0.0.1", 6379);
+		ExecutorService newCachedThreadPool = Executors.newCachedThreadPool();
+		for (int i = 0; i < 10; i++)
+			newCachedThreadPool.submit(new Runnable() {
+				@Override
+				public void run() {
+					while (true) {
+						final Jedis jedis = new Jedis("127.0.0.1", 6379);
+						String[] keys = new String[] { "a", "b", "c" };
+						List<String> blpop = jedis.blpop(0, keys);
+						System.out.println(blpop + "  " + Thread.currentThread().getName());
+					}
+				}
+			});
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testBlocking() {
+
+		final Jedis jedis = new Jedis("127.0.0.1", 6379);
+		while (true) {
+			String[] keys = new String[] { "a", "b", "c" };
+			List<String> blpop = jedis.blpop(0, keys);
+			System.out.println("11111" + blpop + "  " + Thread.currentThread().getName());
+		}
+	}
+
+	@Test
+	public void testBlocking2() {
+
+		final Jedis jedis = new Jedis("127.0.0.1", 6379);
+		int count = 0;
+		while (true) {
+			if (count > 1)
+				try {
+					Thread.sleep(10 * 1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			String[] keys = new String[] { "a", "b", "c" };
+			List<String> blpop = jedis.blpop(0, keys);
+			System.out.println("2222" + blpop + "  " + Thread.currentThread().getName());
+			count++;
+		}
+	}
+
+	@Test
+	public void testBlocking_push() {
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
+		for (int i = 0; i < 10; i++)
+			jedis.rpush("c", "aaa");
+	}
+
 	/**
 	 * 基线Get的测试
+	 * 14482
 	 */
 	@Test
 	public void testGet() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < 100000; i++)
 			jedis.get("foo");
@@ -32,10 +116,11 @@ public class RedisTest {
 
 	/**
 	 * 事物Get的测试
+	 * 1085
 	 */
 	@Test
 	public void testTransGet() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		long start = System.currentTimeMillis();
 		Transaction t = jedis.multi();// 开始事务
 		for (int i = 0; i < 100000; i++)
@@ -50,7 +135,7 @@ public class RedisTest {
 	 */
 	@Test
 	public void testTransSet() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		long start = System.currentTimeMillis();
 		Transaction t = jedis.multi();// 开始事务
 		for (int i = 0; i < 100000; i++)
@@ -65,7 +150,7 @@ public class RedisTest {
 	 */
 	@Test
 	public void testSet() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < 100000; i++)
 			jedis.set("foo", "xxx");
@@ -79,7 +164,7 @@ public class RedisTest {
 	@Test
 	public void testAtom1() {
 		try {
-			Jedis jedis = new Jedis("10.24.1.45", 6379);
+			Jedis jedis = new Jedis("127.0.0.1", 6379);
 			jedis.set("count", "0");
 
 			ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(10);
@@ -88,7 +173,7 @@ public class RedisTest {
 				Future<Object> submit = newFixedThreadPool.submit(new Runnable() {
 					@Override
 					public void run() {
-						new Jedis("10.24.1.45", 6379).incr("count");
+						new Jedis("127.0.0.1", 6379).incr("count");
 					}
 				}, null);
 				ret.add(submit);
@@ -110,7 +195,7 @@ public class RedisTest {
 	@Test
 	public void testAtom2ForError() {
 		try {
-			Jedis jedis = new Jedis("10.24.1.45", 6379);
+			Jedis jedis = new Jedis("127.0.0.1", 6379);
 			jedis.set("count", "0");
 
 			ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(10);
@@ -119,7 +204,7 @@ public class RedisTest {
 				Future<Object> submit = newFixedThreadPool.submit(new Runnable() {
 					@Override
 					public void run() {
-						Jedis jedis = new Jedis("10.24.1.45", 6379);
+						Jedis jedis = new Jedis("127.0.0.1", 6379);
 						String count = jedis.get("count");
 						jedis.set("count", Integer.toString(Integer.parseInt(count) + 1));
 
@@ -145,7 +230,7 @@ public class RedisTest {
 	@Test
 	public void testTrans() {
 		try {
-			Jedis jedis = new Jedis("10.24.1.45", 6379);
+			Jedis jedis = new Jedis("127.0.0.1", 6379);
 			Transaction transaction = jedis.multi();
 			Response<String> response = transaction.get("count");
 			// System.out.println(response.get());//这里调用有异常
@@ -164,7 +249,7 @@ public class RedisTest {
 	@Test
 	public void testAtom2ForOk() {
 		try {
-			Jedis jedis = new Jedis("10.24.1.45", 6379);
+			Jedis jedis = new Jedis("127.0.0.1", 6379);
 			jedis.set("count", "0");
 
 			ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(10);
@@ -173,7 +258,7 @@ public class RedisTest {
 				Future<Object> submit = newFixedThreadPool.submit(new Runnable() {
 
 					private void exe() {
-						Jedis jedis = new Jedis("10.24.1.45", 6379);
+						Jedis jedis = new Jedis("127.0.0.1", 6379);
 						jedis.watch("count");// 对count 加乐观锁
 						String count = jedis.get("count");
 						count = Integer.toString(Integer.parseInt(count) + 1);
@@ -210,13 +295,12 @@ public class RedisTest {
 	}
 
 	/**
-	 * 测试发布订阅的机制
-	 * 要知道，这个机制是跨语言、跨系统，所以所可以作为消息中间使用
+	 * 测试发布订阅的机制 要知道，这个机制是跨语言、跨系统，所以所可以作为消息中间使用
 	 */
 	@Test
 	public void testsubscribe() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
-		//这里是阻塞的
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
+		// 这里是阻塞的
 		jedis.subscribe(new JedisPubSub() {
 
 			@Override
@@ -259,11 +343,9 @@ public class RedisTest {
 
 	@Test
 	public void testpublish() {
-		Jedis jedis = new Jedis("10.24.1.45", 6379);
+		Jedis jedis = new Jedis("127.0.0.1", 6379);
 		jedis.publish("channel1", "hello1");
 		jedis.publish("channel2", "hello2");
 	}
-	
-	
 
 }
