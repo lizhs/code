@@ -1,19 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="WARN" packages="log4j2,">
 	<Properties>
-		<Property name="mypattern">
-		<![CDATA[$${mylookup:aa} trace:%x map:[%X{id1}] [%X{CONSUMER_SEQ_NO}]  %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} -  %msg%n]]>
+		<Property name="mypattern" t="xx">
+		<![CDATA[ ${sys:ltts.home} ${mylookup:aa} trace:%x map:[%X{id1}] [%X{CONSUMER_SEQ_NO}]  %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} -  %msg%n]]>
 		</Property>
 	</Properties>
+
+	<CustomLevels>
+		<CustomLevel name="Cust1" intLevel="350" />
+		<CustomLevel name="Cust2" intLevel="450" />
+		<CustomLevel name="Cust3" intLevel="550" />
+	</CustomLevels>
 	<Appenders>
+		<RollingFile name="testFile" fileName="G:/t/test.log"
+			filePattern="G:/t/test.log.%d{yyyy-MM-dd}-%i">
+			<PatternLayout>
+				<Pattern>[%-5p] [%d{yyyy-MM-dd HH:mm:ss,SSS}] [%t] [%C{1}:%L] -
+					[%m]%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="1MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="10" />
+		</RollingFile>
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout
-				pattern="${mypattern}" />
+			<PatternLayout pattern="${mypattern}" />
 		</Console>
 	</Appenders>
 	<Loggers>
 		<Root level="all">
 			<AppenderRef ref="Console" />
 		</Root>
+		<AsyncLogger name="sys.test" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="testFile" />
+		</AsyncLogger>
 	</Loggers>
 </Configuration>

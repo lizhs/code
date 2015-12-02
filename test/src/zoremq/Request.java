@@ -1,5 +1,7 @@
 package zoremq;
 
+import java.io.IOException;
+
 import org.zeromq.ZMQ;
 
 public class Request {
@@ -18,6 +20,11 @@ public class Request {
 						byte[] response = socket.recv(); // 接收response发送回来的数据
 															// 正在request/response模型中，send之后必须要recv之后才能继续send，这可能是为了保证整个request/response的流程走完
 						System.out.println("receive : " + new String(response));
+						try {
+                            System.in.read();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 					}
 					long after = System.currentTimeMillis();
 

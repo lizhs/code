@@ -1,5 +1,7 @@
 package zoremq.PipeLine;
 
+import java.io.IOException;
+
 import org.zeromq.ZMQ;
 
 /**
@@ -21,7 +23,13 @@ public class MainPusher {
 			long time = System.nanoTime();
 			socket.send(String.valueOf(time));
 			System.out.println("发布了新消息，时间：" + time);
-			Thread.sleep(2000);
+//			Thread.sleep(2000);
+			try {
+                System.in.read();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 		}
 	}
 }

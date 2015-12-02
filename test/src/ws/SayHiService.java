@@ -5,8 +5,9 @@ import java.util.Date;
 
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
-import javax.swing.text.Style;
 
+
+@B("xx")
 @WebService
 @SOAPBinding(style = SOAPBinding.Style.RPC)
 public class SayHiService {

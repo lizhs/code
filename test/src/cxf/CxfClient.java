@@ -1,6 +1,8 @@
 package cxf;
 
+import annotation.PrintMe;
 
+@PrintMe
 public class CxfClient {
 
 	/**

@@ -6,6 +6,10 @@ import org.apache.logging.log4j.core.lookup.StrLookup;
 
 @Plugin(name = "mylookup", category = StrLookup.CATEGORY)
 public class MyLookup implements StrLookup {
+    
+    public MyLookup(){
+        System.out.println("xx");
+    }
 	@Override
 	public String lookup(String key) {
 		return key+"extend!!";
