@@ -20,6 +20,9 @@ public class AndOpTest {
 		System.out.println(s);
 		System.out.println(s2);
 		System.out.println(map);
+		
+		
+		System.out.println(Thread.currentThread().getId());
 	}
 
 }

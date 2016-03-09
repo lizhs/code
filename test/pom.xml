@@ -5,6 +5,11 @@
 	<artifactId>test</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.2.5.RELEASE</version>
+	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -94,6 +99,50 @@
 
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>com.netflix.blitz4j</groupId>
+			<artifactId>blitz4j</artifactId>
+			<version>1.36.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.zbus</groupId>
+			<artifactId>zbus</artifactId>
+			<version>6.2.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.36</version>
+		</dependency>
+		<dependency>
+			<groupId>db2jcc</groupId>
+			<artifactId>db2jcc4</artifactId>
+			<version>1.0</version>
+			<systemPath>${basedir}/lib/db2jcc4.jar</systemPath>
+			<scope>system</scope>
+		</dependency>
+
 
 		<dependency>
 			<groupId>com.lmax</groupId>
@@ -173,12 +222,12 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.4.1</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm</artifactId>
 			<version>3.3.1</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>org.javastack</groupId>
 			<artifactId>figaro</artifactId>
@@ -244,9 +293,9 @@
 			<version>2.2.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
+			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>1.3.2</version>
+			<version>2.4</version>
 		</dependency>
 
 		<dependency>
@@ -363,6 +412,40 @@
 			<version>3.2.2</version>
 		</dependency>
 
+
+
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.6.5.Final</version>
+		</dependency>
+		<!-- 添加javassist -->
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.11.0.GA</version>
+		</dependency>
+		<!-- 添加Log4J依赖 -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -375,5 +458,43 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<profiles>
+		<profile>
+			<id>replace</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>cn.sunline.ltts.maven</groupId>
+						<artifactId>ltts-maven-replace-plugin</artifactId>
+						<version>2.3.1</version>
+						<executions>
+							<execution>
+								<id>replace</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>replace</goal>
+								</goals>
+								<configuration>
+									<file>pom.xml.txt</file>
+									<outputFile>pom.xml.txt.repl</outputFile>
+									<regex>true</regex>
+									<replacements>
+										<replacement>
+											<token>
+												<![CDATA[<parent>[\s\S]*<version>(.*)</version>[\s\S]*</parent>]]>
+											</token>
+											<groupIndex>1</groupIndex>
+											<value>xxxx</value>
+										</replacement>
+									</replacements>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

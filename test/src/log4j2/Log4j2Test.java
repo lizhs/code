@@ -1,5 +1,6 @@
 package log4j2;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.apache.logging.log4j.EventLogger;
@@ -9,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.apache.logging.log4j.core.async.AsyncLogger;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.Test;
 
@@ -29,12 +30,36 @@ public class Log4j2Test {
      * <RegexFilter regex=".* filtertest .*" onMatch="ACCEPT"
      * onMismatch="DENY" />
      */
+    @Test
+    public void testSimple() {
+        
+        new MyLog(MyLog.class).info("xx");
+//        logger1.info("xx");
+    }
+
+    /**
+     * 验证删除日志文件是否重新新建
+     */
+    @Test
+    public void testDeleteLogFile() {
+        Logger logger2 = LogManager.getLogger("sys.test");
+        while (true) {
+            try {
+                System.in.read();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+            logger2.debug("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        }
+    }
 
     @Test
-    public void testss() {
+    public void testDefaultRolloverStrategy() {
         Logger logger2 = LogManager.getLogger("sys.test");
-        for (int i = 0; i < 1000000; i++) {
-            logger2.debug("xx" + i);
+        for (int i = 0; i < 10000000000000L; i++) {
+            logger2.debug("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + i);
         }
     }
 
@@ -110,19 +135,11 @@ public class Log4j2Test {
     }
 
     @Test
-    public void testDefaultRolloverStrategy() {
-        //DefaultRolloverStrategy
-        Logger logger2 = LogManager.getLogger("sys.test");
-        for (int i = 0; i < 100000; i++)
-            logger2.debug("xxx");
-    }
-
-    @Test
     public void testLookup() {
         //        ThreadContext.put("aa", "id11111");
         //PluginManager.addPackage(MyLookup.class.getPackage().getName());
         //配置中添加packages org.apache.logging.log4j.core.config.xml.XmlConfiguration.XmlConfiguration(ConfigurationSource)
-        logger1.debug("xx");
+        logger1.debug("11111111111111");
     }
 
     @Test
