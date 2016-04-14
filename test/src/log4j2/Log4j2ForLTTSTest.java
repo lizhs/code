@@ -2,9 +2,8 @@ package log4j2;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.junit.Test;
-
-import com.sun.jdmk.ThreadContext;
 
 public class Log4j2ForLTTSTest {
     static {

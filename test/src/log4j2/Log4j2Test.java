@@ -102,6 +102,8 @@ public class Log4j2Test {
 
     @Test
     public void testThreadContext() {
+        logger.debug("Message 000");
+        
         ThreadContext.push("11"); // Add the fishtag;
         ThreadContext.push("22"); // Add the fishtag;
         ThreadContext.put("id1", "id11111");

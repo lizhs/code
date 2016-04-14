@@ -12,7 +12,7 @@ public class ProxoolTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		org.logicalcobwebs.proxool.ProxoolDataSource  d;
+//		org.logicalcobwebs.proxool.ProxoolDataSource  d;
 	}
 
 }

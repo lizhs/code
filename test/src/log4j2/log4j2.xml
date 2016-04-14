@@ -2,7 +2,7 @@
 <Configuration status="WARN" packages="log4j2">
 	<Properties>
 		<Property name="mypattern">
-		<![CDATA[ ${sys:ltts.home} ${mylookup:aa} trace:%x map:[%X{id1}] [%X{CONSUMER_SEQ_NO}]  %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} -  %msg%n]]>
+		<![CDATA[ ${sys:ltts.home} ${mylookup:aa} trace:%x map:[%X{id1}] [%-1X{CONSUMER_SEQ_NO}]   %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} -  %msg%n]]>
 		</Property>
 	</Properties>
 
@@ -20,9 +20,9 @@
 			</PatternLayout>
 			<Policies>
 				<TimeBasedTriggeringPolicy />
-				<SizeBasedTriggeringPolicy size="100MB" />
+				<SizeBasedTriggeringPolicy size="1MB" />
 			</Policies>
-			<DefaultRolloverStrategy min="1" max="10" />
+			<DefaultRolloverStrategy min="1" max="1000000" />
 		</RollingFile>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="${mypattern}" />

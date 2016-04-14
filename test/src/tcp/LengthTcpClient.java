@@ -11,7 +11,7 @@ public class LengthTcpClient {
 
     public static void main(String[] args) {
         try {
-            Socket s = new Socket("127.0.0.1", 7895);
+            Socket s = new Socket("127.0.0.1", 8888);
             s.setTcpNoDelay(true);
             //			s.setSoLinger(true, 0);
             //			s.setTcpNoDelay(false);//表示关闭socket缓存，及时发送
