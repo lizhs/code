@@ -1,32 +1,38 @@
 package nio.netty;
 
+import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class TimeServerHandler extends ChannelInboundHandlerAdapter {
+public class TimeServerHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         System.out.println("==========");
     }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         try {
-            System.out.println("server channelRead..");
+            System.out.println("server channelRead.."+Thread.currentThread().getName());
             String body = (String) msg;
+            
             //            byte[] req = new byte[buf.readableBytes()];
             //            buf.readBytes(req);
             //            String body = new String(req, "UTF-8");
+            int i=body.getBytes().length;
+            System.out.println(i);
             System.out.println("接收消息内容:" + body);
+            if (!body.endsWith(TimeClient.pkgEnd))
+                throw new RuntimeException("报文接收不完整"+"  报文长度："+i);
             //            String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date(
             //                    System.currentTimeMillis()).toString() : "BAD ORDER";
             //            ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < 10000; i++) {
-                sb.append("b");
-            }
-            ctx.write("start|" + sb.toString() + "|end");
+//            Thread.sleep(3 * 1000);
+//            NioReq req = JSON.parseObject(msg + "", NioReq.class);
+//            req.setReqContent(req.getReqContent() + " hello!");
+//            ctx.write(JSON.toJSONString(req));
+//            ctx.write(body+" hello!");
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);

@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IDE开发测试时的默认配置 -->
+<Configuration status="WARN" monitorInterval="30">
+	<!-- 属性的定义必须放在 -->
+	<Properties>
+		<!-- 跟运行期交易无关日志 -->
+		<property name="default_pattern">
+		  <![CDATA[ [%-5p][%d{yyyy-MM-dd HH:mm:ss,SSS}][%t][%C{1}.%M:%L][%m]%n ]]>
+		</property>
+
+		<!-- 联机交易日志 -->
+		<property name="onl_pattern">
+		  <![CDATA[ [%-5p][%d{yyyy-MM-ddHH:mm:ss,SSS}][%t][%-1X{jiaoyirq}][%-1X{pckgsq}][%-1X{jiaoyigy}][%-1X{prcscd}][%C{1}.%M:%L][%m]%n ]]>
+		</property>
+
+		<!-- 批量交易日志 -->
+		<property name="bat_pattern">
+			<!-- 批量交易中 jiaoyirq-交易日期 、pljypich-批次号、pljyzbsh-交易组ID、pljylcbs-流程ID -->
+		  <![CDATA[ [%-5p][%d{yyyy-MM-dd HH:mm:ss,SSS}][%t][%-1X{jiaoyirq}][%-1X{pljypich}][%-1X{jobname}][%-1X{pljyzbsh}][%-1X{pljylcbs}][%t][%C{1}.%M:%L][%m]%n ]]>
+		</property>
+
+		<!-- 联机或批量日志 -->
+		<property name="onl_bat_pattern">
+		  <![CDATA[ [%-5p] [%d{yyyy-MM-dd HH:mm:ss,SSS}][%t][%-1X{jiaoyirq}][%-1X{pckgsq}][%-1X{pljypich}][%C{1}:%L][%m]%n ]]>
+		</property>
+		
+		<!-- 如果定义目录层级的变量为空，则采用默认变量替代，避免程序异常 -->
+		<property name="jobname">jobname</property>
+	</Properties>
+
+
+	<!-- OFF(0), FATAL(100), ERROR(200), WARN(300), INFO(400), DEBUG(500), TRACE(600), 
+		ALL(Integer.MAX_VALUE); -->
+
+	<CustomLevels>
+		<CustomLevel name="SQLINFO" intLevel="320" /><!-- sql调用信息日志 -->
+		<CustomLevel name="SQL" intLevel="330" /><!-- sql语句日志 -->
+		<CustomLevel name="SERVICE" intLevel="320" /><!-- 服务调用信息日志 -->
+		<CustomLevel name="PROFILE" intLevel="350" /><!-- 性能统计日志 -->
+		<CustomLevel name="DATAAREA" intLevel="360" /><!-- 数据区日志 -->
+		<CustomLevel name="PARM" intLevel="450" /><!-- 参数日志 -->
+		<CustomLevel name="METHOD" intLevel="370" /><!-- 方法日志 -->
+		<CustomLevel name="TECH_METHOD" intLevel="370" /><!-- 技术方法日志 -->
+	</CustomLevels>
+
+	<Appenders>
+		<!-- 平台默认日志 （按天滚动） -->
+		<RollingFile name="default"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_default.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_default.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${default_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<!-- 插件日志 （按天滚动） -->
+		<RollingFile name="plugin"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_plugin.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_plugin.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<!-- 启动日志 （按天滚动） -->
+		<RollingFile name="boot"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_boot.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_boot.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${default_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<!-- 轮询日志 -->
+		<RollingFile name="poll"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_poll.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_poll.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${default_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<!-- 调优日志 （联机、批量、路由） -->
+		<RollingFile name="profile_onl"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_profile_onl.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_profile_onl.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<RollingFile name="profile_bat"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_profile_bat.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_profile_onl.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<!-- 根据日志类型路由不同的日志文件 -->
+		<Routing name="profile_route">
+			<Routes pattern="$${ctx:SysType}">
+				<!-- 默认路由日志 -->
+				<Route ref="default" />
+				<!-- 联机交易日志 -->
+				<Route key="onl" ref="profile_onl" />
+				<!-- 批量交易日志 -->
+				<Route key="batch" ref="profile_bat" />
+			</Routes>
+		</Routing>
+
+
+		<RollingFile name="links_onl"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_links_onl.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_links_onl.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+
+
+		<RollingFile name="links_bat"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_links_bat.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_links_onl.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+
+
+
+		<!-- 关键调用日志 （按天滚动） -->
+		<RollingFile name="callpath_onl"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_callpath_onl.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_callpath_onl.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<RollingFile name="callpath_bat"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_callpath_bat.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_callpath_onl.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+
+		<!-- 服务器日志 -->
+		<RollingFile name="server_bat"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_server_bat.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_server_bat.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<RollingFile name="server_onl"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_server_onl.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_server_onl.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+
+		<!-- 慢sql打印 -->
+		<RollingFile name="slowsql"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/slowsql.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_slowsql.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<!-- 慢sql打印 -->
+		<RollingFile name="alert"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/alert.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_alert.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+
+
+		<RollingFile name="metrics"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/metrics.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_metrics.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+		<RollingFile name="error"
+			fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/error.log"
+			filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/sys/${sys:ltts.vmid}_sys_error.log.%d{yyyy-MM-dd}-%i.gz">
+			<PatternLayout pattern="${onl_bat_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="30MB" />
+			</Policies>
+			<DefaultRolloverStrategy min="1" max="3" />
+		</RollingFile>
+
+
+		<Routing name="busi_onl">
+			<Routes pattern="$${ctx:jiaoyirq}_$${ctx:prcscd}">
+				<Route>
+					<!--动态appender -->
+					<RollingFile name="busi_onl_appender_${ctx:jiaoyirq}_${ctx:prcscd}"
+						fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/busi/onl/${ctx:jiaoyirq}/${ctx:prcscd}/${ctx:prcscd}.log"
+						filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/busi/onl/${ctx:jiaoyirq}/${ctx:prcscd}/${sys:ltts.vmid}_busi_onl.log.%d{yyyy-MM-dd}-%i.gz">
+						<PatternLayout pattern="${onl_pattern}" />
+						<Policies>
+							<TimeBasedTriggeringPolicy />
+							<SizeBasedTriggeringPolicy size="30MB" />
+						</Policies>
+						<DefaultRolloverStrategy min="1" max="3" />
+					</RollingFile>
+				</Route>
+			</Routes>
+			<!-- 15分钟内如果文件没有任何操作，则清理掉 -->
+			<IdlePurgePolicy timeToLive="15" timeUnit="minutes" />
+		</Routing>
+
+		<Routing name="busi_bat">
+			<Routes pattern="$${ctx:jiaoyirq}/$${ctx:pljylcbs}/$${ctx:pljyzbsh}/$${ctx:pljioyma}/$${ctx:jobname}">
+				<Route>
+					<!--动态appender -->
+					<RollingFile name="busi_bat_appender_${ctx:jiaoyirq}/${ctx:pljylcbs}/${ctx:pljyzbsh}/${ctx:pljioyma}/${ctx:jobname}"
+						fileName="${sys:ltts.log.home}/${sys:ltts.vmid}/busi/bat/${ctx:jiaoyirq}/${ctx:pljylcbs}/${ctx:pljyzbsh}/${ctx:pljioyma}/${ctx:jobname}/${ctx:pljioyma}.log"
+						filePattern="${sys:ltts.log.home}/${sys:ltts.vmid}/busi/bat/${ctx:jiaoyirq}/${ctx:pljylcbs}/${ctx:pljyzbsh}/${ctx:pljioyma}/${ctx:jobname}/${sys:ltts.vmid}_${ctx:pljioyma}.log.%d{yyyy-MM-dd}-%i.gz">
+						<PatternLayout pattern="${bat_pattern}" />
+						<Policies>
+							<TimeBasedTriggeringPolicy />
+							<SizeBasedTriggeringPolicy size="30MB" />
+						</Policies>
+						<DefaultRolloverStrategy min="1" max="3" />
+					</RollingFile>
+				</Route>
+			</Routes>
+			<!-- 15分钟内如果文件没有任何操作，则清理掉 -->
+			<IdlePurgePolicy timeToLive="15" timeUnit="minutes" />
+		</Routing>
+ 
+
+		<Routing name="busi_route">
+			<Routes pattern="$${ctx:LogType}">
+				<!-- 默认路由日志 -->
+				<Route ref="default" />
+				<!-- 联机交易日志 -->
+				<Route key="busi_onl" ref="busi_onl" />
+				<!-- 批量交易日志 -->
+				<Route key="busi_bat" ref="busi_bat" />
+			</Routes>
+		</Routing>
+
+
+
+
+	</Appenders>
+
+	<Loggers>
+		<!-- for JDBC -->
+		<AsyncLogger name="jdbc.audit" level="FATAL" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="busi_route" />
+
+		</AsyncLogger>
+		<AsyncLogger name="jdbc.resultset" level="FATAL"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+
+		</AsyncLogger>
+		<AsyncLogger name="jdbc.sqlonly" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="busi_route" />
+
+		</AsyncLogger>
+		<AsyncLogger name="jdbc.sqltiming" level="FATAL"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+
+		</AsyncLogger>
+
+		<AsyncLogger name="jdbc.connection" level="FATAL"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+
+		</AsyncLogger>
+		<AsyncLogger name="log4jdbc.debug" level="FATAL"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+
+		</AsyncLogger>
+		<!-- for JDBC -->
+
+		<!-- for ibatis -->
+		<AsyncLogger name="org.apache.ibatis" level="error"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<!-- for ibatis -->
+
+		<!-- for 屏蔽第三方日志 -->
+		<AsyncLogger name="org.springframework" level="ERROR"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="org.mortbay" level="ERROR" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="freemarker" level="ERROR" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="com.solacesystems" level="FATAL"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="com.solacesystems.jcsmp.protocol.impl"
+			level="FATAL" additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="com.solacesystems.jcsmp.impl" level="FATAL"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="org.eclipse.jetty" level="INFO"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="org.quartz" level="ERROR" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="org.joda" level="ERROR" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="org.apache.commons" level="ERROR"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="net.sf.jasperreports" level="ERROR"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<AsyncLogger name="org.apache.ibatis.logging.jdbc.BaseJdbcLogger"
+			level="ERROR" additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncLogger>
+		<!-- for 屏蔽第三方日志 -->
+
+		<!-- for 业务日志的日志 -->
+		<AsyncRoot level="debug" additivity="false" includeLocation="true">
+			<AppenderRef ref="busi_route" />
+		</AsyncRoot>
+		<!-- for 业务日志的日志 -->
+
+		<!-- for 系统日志的日志 -->
+		<AsyncLogger name="sys.boot" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="boot" />
+		</AsyncLogger>
+
+		<AsyncLogger name="sys.plugin" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="plugin" />
+		</AsyncLogger>
+
+		<AsyncLogger name="sys.poll" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="poll" />
+		</AsyncLogger>
+
+		<AsyncLogger name="sys.profile" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="profile_route" />
+		</AsyncLogger>
+		<AsyncLogger name="sys.onl.links" level="debug"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="links_onl" />
+		</AsyncLogger>
+		<AsyncLogger name="sys.bat.links" level="debug"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="links_bat" />
+		</AsyncLogger>
+
+		<AsyncLogger name="sys.onl.callpath" level="debug"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="callpath_onl" />
+		</AsyncLogger>
+		<AsyncLogger name="sys.bat.callpath" level="debug"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="callpath_bat" />
+		</AsyncLogger>
+
+
+		<AsyncLogger name="sys.onl.server" level="debug"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="server_onl" />
+		</AsyncLogger>
+		<AsyncLogger name="sys.bat.server" level="debug"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="server_bat" />
+		</AsyncLogger>
+
+
+		<AsyncLogger name="sys.slowSql" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="slowsql" />
+		</AsyncLogger>
+		<AsyncLogger name="sys.error" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="error" />
+		</AsyncLogger>
+		<AsyncLogger name="sys.metrics" level="debug" additivity="false"
+			includeLocation="true">
+			<AppenderRef ref="metrics" />
+		</AsyncLogger>
+		<AsyncLogger name="sys.metrics.alert" level="debug"
+			additivity="false" includeLocation="true">
+			<AppenderRef ref="alert" />
+		</AsyncLogger>
+
+
+	</Loggers>
+
+</Configuration>

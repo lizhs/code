@@ -32,9 +32,9 @@ public class Log4j2Test {
      */
     @Test
     public void testSimple() {
-        
+
         new MyLog(MyLog.class).info("xx");
-//        logger1.info("xx");
+        //        logger1.info("xx");
     }
 
     /**
@@ -69,44 +69,33 @@ public class Log4j2Test {
         logger.debug("xxx");
     }
 
+    static {
+        Level.forName("Cust1", 550);
+    }
+
     @Test
     public void testCustomLevel() {
         // This creates the "VERBOSE" level if it does not exist yet.
-        final Level VERBOSE = Level.forName("VERBOSE", 550);
+        //编码
+        logger.log(Level.forName("Cust0", 550), "0000");
 
-        final Logger logger = LogManager.getLogger();
-        logger.log(VERBOSE, "a verbose message"); // use the custom VERBOSE
-                                                  // level
-
-        // Create and use a new custom level "DIAG".
-        logger.log(Level.forName("DIAG", 350), "a diagnostic message");
-
-        // Use (don't create) the "DIAG" custom level.
-        // Only do this *after* the custom level is created!
-        logger.log(Level.getLevel("DIAG"), "another diagnostic message");
-
-        // Using an undefined level results in an error: Level.getLevel()
-        // returns null,
-        // and logger.log(null, "message") throws an exception.
-        logger.log(Level.getLevel("FORGOT_TO_DEFINE"), "some message"); // throws
-                                                                        // exception!
-
+        //配置中定义
+        int intLevel = Level.getLevel("Cust1").intLevel();
+        System.out.println(intLevel);
         logger.log(Level.getLevel("Cust1"), "1111"); // throws
         logger.log(Level.getLevel("Cust2"), "222"); // throws
         logger.log(Level.getLevel("Cust3"), "3333"); // throws
 
-        logger.debug("xxx");
-
+        //没有定义  不会报错，直接不打印
         logger.log(Level.getLevel("Cust4"), "不存在！"); // throws
     }
 
     @Test
     public void testThreadContext() {
         logger.debug("Message 000");
-        
+
         ThreadContext.push("11"); // Add the fishtag;
         ThreadContext.push("22"); // Add the fishtag;
-        ThreadContext.put("id1", "id11111");
         ThreadContext.put("CONSUMER_SEQ_NO", "213233333333333333333333333");
 
         logger.debug("Message 1");
@@ -115,51 +104,73 @@ public class Log4j2Test {
         ThreadContext.pop();
     }
 
-    @Test
-    public void testEventLog() {
-        String confirm = UUID.randomUUID().toString();
-        confirm = confirm.substring(0, 30);
-        ThreadContext.put("hostname", "111");
+    //    @Test
+    //    public void testEventLog() {
+    //        String confirm = UUID.randomUUID().toString();
+    //        confirm = confirm.substring(0, 30);
+    //        ThreadContext.put("hostname", "111");
+    //
+    //        StructuredDataMessage msg = new StructuredDataMessage(confirm, null, "transfer");
+    //        msg.put("toAccount", "xxx");
+    //        msg.put("fromAccount", "xx");
+    //        msg.put("amount", "xx");
+    //        EventLogger.logEvent(msg);
+    //        logger1.debug("xx");
+    //    }
 
-        StructuredDataMessage msg = new StructuredDataMessage(confirm, null, "transfer");
-        msg.put("toAccount", "xxx");
-        msg.put("fromAccount", "xx");
-        msg.put("amount", "xx");
-        EventLogger.logEvent(msg);
+    public static class Obj1 {
+
+    }
+
+    @Test
+    public void testTrace() {//用于业务逻辑分析
+        logger1.entry(new Obj1(), new Obj1());
         logger1.debug("xx");
+        logger1.exit(new Obj1());
     }
 
     @Test
-    public void testTrace() {
-        logger1.entry();
-        logger1.debug("xx");
-        logger1.exit();
+    public void testDynamicThresholdFilter() {
+        ThreadContext.put("loginId", "User1");
+        logger1.debug("User1=debug1111");
+        logger1.error("User1=error11111");
+        ThreadContext.put("loginId", "User2");
+        logger1.debug("User2=debug1111");
+        logger1.error("User2=error11111");
+       
     }
 
     @Test
-    public void testLookup() {
-        //        ThreadContext.put("aa", "id11111");
-        //PluginManager.addPackage(MyLookup.class.getPackage().getName());
-        //配置中添加packages org.apache.logging.log4j.core.config.xml.XmlConfiguration.XmlConfiguration(ConfigurationSource)
-        logger1.debug("11111111111111");
+    public void testMarkerFilter() {
+        Marker marker1 = MarkerManager.getMarker("maker1");
+        logger1.debug(marker1, "1111");
+        Marker marker2 = MarkerManager.getMarker("maker2");//可以继承过来
+        marker2.setParents(marker1);
+        logger1.debug(marker2, "222");
+
+        Marker marker3 = MarkerManager.getMarker("maker3");
+        logger1.debug(marker3, "333");
     }
 
     @Test
-    public void test() {
-        User u = new User();
-        u.setAge(10);
-        u.setName("x");
+    public void testBurstFilter() {
+        logger1.debug(UPDATE_MARKER, "SELECT * FROM {}", "1");
+        long a = System.nanoTime();
+        logger1.debug(UPDATE_MARKER, "SELECT * FROM {}", "1");
+        logger1.debug(UPDATE_MARKER, "SELECT * FROM {}", "1");
+        logger1.debug(UPDATE_MARKER, "SELECT * FROM {}", "1");
+        long b = System.nanoTime();
 
-        logger1.entry(u);
-        logger1.debug("xx");
+        System.out.println(b - a);
+        a = System.nanoTime();
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++)
+            logger1.debug(UPDATE_MARKER, "SELECT * FROM {}", i);
+        long end = System.currentTimeMillis();
+        b = System.nanoTime();
+        System.out.println("耗时ms:" + (end - start));
+        System.out.println("耗时ns:" + (b - a));
 
-        logger1.debug(UPDATE_MARKER, "SELECT * FROM {}", u);
-        _test();
-        logger1.exit();
-    }
-
-    private void _test() {
-        logger1.debug("xx222");
     }
 
 }

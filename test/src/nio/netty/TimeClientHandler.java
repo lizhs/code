@@ -1,13 +1,15 @@
 package nio.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.util.logging.Logger;
 
-import tool.TestUtil;
+import nio.netty.util.Lock;
+import nio.netty.util.LockHolder;
+import nio.netty.util.NioReq;
+
+import com.alibaba.fastjson.JSON;
 
 public class TimeClientHandler extends ChannelInboundHandlerAdapter {
 
@@ -15,6 +17,7 @@ public class TimeClientHandler extends ChannelInboundHandlerAdapter {
             .getLogger(TimeClientHandler.class.getName());
 
     //    private final ByteBuf firstMessage;
+    int count = 0;
 
     public TimeClientHandler() {
         //byte[] req = "QUERY TIME ORDER".getBytes();
@@ -33,28 +36,49 @@ public class TimeClientHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //与服务端建立连接后
         System.out.println("client channelActive..");
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < 10000; i++) {
-            sb.append("a");
-        }
-        ctx.writeAndFlush("start|" + sb.toString() + "|end");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
-        System.out.println("client channelRead..");
-        //服务端返回消息后
-        //        ByteBuf buf = (ByteBuf) msg;
-        //        byte[] req = new byte[buf.readableBytes()];
-        //        buf.readBytes(req);
+//        System.out.println("client channelRead..");
         String body = msg + "";//new String(req, "UTF-8");
-        System.out.println("Now is :" + body);
+        //        TimeClient.resQue.add(body);
+
+        try {
+            NioReq req = JSON.parseObject(msg + "", NioReq.class);
+            //            resObj.setInner(resObj.getInner() + "|connIndex=" + connIndex);
+            Lock locker = LockHolder.getLock(req.getReqId());
+            if (locker == null) {
+                //该交易要特别注意
+                //                LOGGER.error(String.format("!!!交易超时异常，发送端已经超时，但服务端已经成处理请求[%s]，并且返回了处理结果[%s]", resObj.getRqId(), JsonUtil.toJson(resObj)));
+                return;
+            }
+
+            locker.setResJson(body);
+            //            locker.setNotified(true);
+            synchronized (locker) {
+                locker.notify();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //            LOGGER.error("error in onReceive.", e);
+        }
+
+        //        count++;
+        //        if(count>10000)
+        //            return;
+        //        StringBuffer sb = new StringBuffer();
+        //        for (int i = 0; i < 1000; i++) {
+        //            sb.append("a");
+        //        }
+        //ctx.writeAndFlush("start|" + sb.toString() + "|end");
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
+        cause.printStackTrace();
         System.out.println("client exceptionCaught..");
         // 释放资源
         logger.warning("Unexpected exception from downstream:"

@@ -1,0 +1,10 @@
+java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:152)
+	at java.net.SocketInputStream.read(SocketInputStream.java:122)
+	at tcp.TcpClient.read(TcpClient.java:61)
+	at tcp.TcpServerForTelnet.main(TcpServerForTelnet.java:43)
+java.io.IOException: Exceed to max try times for reading socket: '10'
+
+	at tcp.TcpClient.read(TcpClient.java:73)
+	at tcp.TcpServerForTelnet.main(TcpServerForTelnet.java:45)

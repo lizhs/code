@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="log4j2,log4j2">
+	<Properties>
+		<Property name="mypattern">
+		<![CDATA[[%-5p]   mylookup:${mylookup:aa} trace:%x   map:[%-1X{CONSUMER_SEQ_NO}]   %d{HH:mm:ss.SSS} [%t]     -  %msg%n]]>
+		</Property>
+	</Properties>
+
+	<Appenders>
+
+		<Routing name="Routing">
+			<Routes pattern="$${ctx:date}/$${ctx:prcscd}">
+				<Route>
+					<RollingFile name="${ctx:date}-${ctx:prcscd}-Appander" fileName="G:/t/${ctx:date}/${ctx:prcscd}.log"
+						filePattern="G:/t/${ctx:date}/${ctx:prcscd}.%i.log.gz">
+						<PatternLayout>
+							<pattern>%d %p %c{1.} [%t] %m%n</pattern>
+						</PatternLayout>
+						<SizeBasedTriggeringPolicy size="500" />
+					</RollingFile>
+				</Route>
+			</Routes>
+			<IdlePurgePolicy timeToLive="15" timeUnit="minutes" />
+		</Routing>
+
+
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${mypattern}" />
+			<Filters>
+				<BurstFilter level="INFO" rate="10" maxBurst="100" />
+				<MarkerFilter marker="maker1" onMatch="ACCEPT"
+					onMismatch="DENY" />
+				<DynamicThresholdFilter key="loginId"
+					defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="DENY">
+					<KeyValuePair key="User1" value="DEBUG" />
+					<KeyValuePair key="User2" value="WARN" />
+				</DynamicThresholdFilter>
+			</Filters>
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Root level="all">
+			<AppenderRef ref="Console" />
+		</Root>
+		<AsyncLogger name="sys.tt" level="debug" additivity="false"
+			includeLocation="false">
+			<AppenderRef ref="Routing" />
+		</AsyncLogger>
+
+	</Loggers>
+</Configuration>

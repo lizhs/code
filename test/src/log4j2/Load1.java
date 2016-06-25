@@ -16,9 +16,10 @@ public class Load1 {
      * @param args
      */
     public static void main(String[] args) {
+        System.out.println(System.getProperty("Log4jContextSelector"));
         Logger logger2 = LogManager.getLogger("onl_busi");
         for (int i = 0; i < 1000000000; i++)
-            logger2.info("xx");
+            logger2.info("xx啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊");
     }
 
 }

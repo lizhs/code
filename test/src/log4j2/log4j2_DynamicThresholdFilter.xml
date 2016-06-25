@@ -28,8 +28,6 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="${mypattern}" />
 			<Filters>
-				<BurstFilter level="INFO" rate="10" maxBurst="100" />
-				<MarkerFilter marker="maker1" onMatch="ACCEPT" onMismatch="DENY" />
 				<DynamicThresholdFilter key="loginId"
 					defaultThreshold="ERROR" onMatch="ACCEPT" onMismatch="DENY">
 					<KeyValuePair key="User1" value="DEBUG" />

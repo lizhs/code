@@ -16,7 +16,7 @@ public class TcpClient {
 
     public static void main(String[] args) throws IOException {
         try {
-            Socket s = new Socket("127.0.0.1", 9001);
+            Socket s = new Socket("127.0.0.1", 9003);
 //            s.setSoTimeout(1000);
 
             StringBuffer sb = new StringBuffer();

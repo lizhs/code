@@ -20,6 +20,12 @@ public class Response {
 			System.out.println("客户端的相应：" + new String(request));
 			// System.out.println("receive : " + new String(request));
 			String response = "world";
+//			try {
+//                Thread.sleep(10*1000);
+//            } catch (InterruptedException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
 			socket.send(response); // 向request端发送数据
 									// ，必须要要request端返回数据，没有返回就又recv，将会出错，这里可以理解为强制要求走完整个request/response流程
 		}
